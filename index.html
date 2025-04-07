@@ -1,123 +1,170 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Квест на День Рождения )</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: #fff8f0;
+      color: #333;
+    }
 
-    <title>Квест на День Рождения )</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            padding: 20px;
-            background: #fff8f0;
-        }
-        #question-box {
-            margin-bottom: 20px;
-        }
-        #result {
-            color: red;
-            font-weight: bold;
-        }
-        input, button {
-            font-size: 1.2em;
-            margin-top: 10px;
-        }
-        img {
-            max-width: 100%%;
-            margin-top: 10px;
-        }
-        audio {
-            display: block;
-            margin-top: 10px;
-        }
-    </style>
+    /* Стартовый экран (обложка) — перекрывает всю страницу */
+    #start-screen {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 9999;
+      background: #fff8f0;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+    }
+
+    /* Основной блок квеста скрыт до запуска */
+    #question-box {
+      display: none;
+      padding: 20px;
+    }
+
+    /* Стили для кнопок и полей ввода */
+    input, button {
+      font-size: 1.2em;
+      margin-top: 10px;
+      padding: 8px 12px;
+    }
+    
+    img {
+      max-width: 100%;
+      margin-top: 10px;
+    }
+    
+    audio {
+      display: block;
+      margin-top: 10px;
+    }
+
+    /* Тёмная тема для пользователей с включённым режимом */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: #1a1a1a;
+        color: #f0f0f0;
+      }
+      #start-screen {
+        background: #1a1a1a;
+        color: #f0f0f0;
+      }
+      input, button {
+        background-color: #333;
+        color: #f0f0f0;
+        border: 1px solid #666;
+      }
+    }
+  </style>
 </head>
 <body>
-    <h1>🎵 Квест на День Рождения ) 🎵</h1>
-    <div id="question-box">
-        <p id="question"></p>
-        <div id="extra"></div>
-        <input type="text" id="answer" placeholder="Твой ответ...">
-        <br>
-        <button onclick="checkAnswer()">Ответить</button>
-        <p id="result"></p>
-    </div>
+  <!-- Стартовый экран (обложка) -->
+  <div id="start-screen">
+    <h1>🎉 Поздравляю с Днём Рождения! 🎉</h1>
+    <p style="font-size: 1.2em; margin: 20px 0;">
+      Чтобы найти подарок, нужно пройти этот очень сложный квест! ))
+    </p>
+    <button onclick="startQuest()">Начать квест</button>
+  </div>
 
-    <script>
-        
-const questions = [
-    {
+  <!-- Основной блок квеста -->
+  <div id="question-box">
+    <h1>Квест на День Рождения )</h1>
+    <p id="question"></p>
+    <div id="extra"></div>
+    <input type="text" id="answer" placeholder="Твой ответ...">
+    <br>
+    <button onclick="checkAnswer()">Ответить</button>
+    <p id="result" style="color: red; font-weight: bold;"></p>
+  </div>
+
+  <script>
+    // Функция запуска квеста — скрывает стартовый экран и показывает вопросы
+    function startQuest() {
+      document.getElementById("start-screen").style.display = "none";
+      document.getElementById("question-box").style.display = "block";
+    }
+
+    let current = 0;
+    const questions = [
+      {
         q: "Угадай композицию по музыкальному фрагменту:",
         a: ["fly me to the moon"],
         audio: "fmttm.aac"
-    },
-    {
+      },
+      {
         q: "Продолжи строчку: 'Summertime, and the living is ...'",
         a: ["easy"]
-    },
-    {
+      },
+      {
         q: "Сколько четвертей в такте 5/4?",
         a: ["5"]
-    },
-    {
+      },
+      {
         q: "Как называется стиль джазового вокала, в котором имитируют инструменты?",
         a: ["скэт", "scat"]
-    },
-    {
+      },
+      {
         q: "Что за тональность изображена на картинке?",
         a: ["ре мажор", "си минор"],
         image: "question6.png"
-    },
-    {
+      },
+      {
         q: "Посмотри на эти ноты — что за песня?",
         a: ["the shadow of your smile"],
         image: "question7.png"
+      }
+    ];
+
+    function showQuestion() {
+      document.getElementById("result").textContent = "";
+      document.getElementById("answer").value = "";
+      document.getElementById("extra").innerHTML = "";
+
+      if (current < questions.length) {
+        let q = questions[current];
+        document.getElementById("question").textContent = `Вопрос ${current + 1}: ${q.q}`;
+
+        if (q.audio) {
+          document.getElementById("extra").innerHTML = `<audio controls><source src="${q.audio}" type="audio/aac"></audio>`;
+        }
+
+        if (q.image) {
+          document.getElementById("extra").innerHTML = `<img src="${q.image}" alt="Изображение вопроса">`;
+        }
+      } else {
+        document.getElementById("question-box").innerHTML = `
+          <h2>🎉 Поздравляю с Днём Рождения! 🎁</h2>
+          <p>Твой подарок ждёт тебя в Яндексе по адресу:<br><strong>Ленинский пр. 116</strong></p>
+          <img src="final.png" alt="Поздравление">
+        `;
+      }
     }
-];
 
-
-        let current = 0;
-
-        function showQuestion() {
-            document.getElementById("result").textContent = "";
-            document.getElementById("answer").value = "";
-            document.getElementById("extra").innerHTML = "";
-
-            if (current < questions.length) {
-                let q = questions[current];
-                document.getElementById("question").textContent = `Вопрос ${current + 1}: ${q.q}`;
-
-                if (q.audio) {
-                    document.getElementById("extra").innerHTML = `<audio controls><source src="${q.audio}" type="audio/aac"></audio>`;
-                }
-
-                if (q.image) {
-                    document.getElementById("extra").innerHTML = `<img src="${q.image}">`;
-                }
-            } else {
-                
-    document.getElementById("question-box").innerHTML = `
-        <h2>🎉 Поздравляю с Днём Рождения! 🎁</h2>
-        <p>Твой подарок ждёт тебя в Яндексе по адресу:<br><strong>Ленинский пр. 116</strong></p>
-        <img src="final.png">
-    `;
-    
-            }
-        }
-
-        function checkAnswer() {
-            let input = document.getElementById("answer").value.trim().toLowerCase();
-            let correct = questions[current].a;
-            if (correct.includes(input)) {
-                current++;
-                showQuestion();
-            } else {
-                document.getElementById("result").textContent = "Неа, подумай ещё!";
-            }
-        }
-
+    function checkAnswer() {
+      let input = document.getElementById("answer").value.trim().toLowerCase();
+      let correct = questions[current].a;
+      if (correct.includes(input)) {
+        current++;
         showQuestion();
-    </script>
+      } else {
+        document.getElementById("result").textContent = "Неа, подумай ещё!";
+      }
+    }
+
+    // Показываем первый вопрос после старта квеста
+    showQuestion();
+  </script>
 </body>
 </html>
