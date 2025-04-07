@@ -1,0 +1,121 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Квест на День Рождения )</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            background: #fff8f0;
+        }
+        #question-box {
+            margin-bottom: 20px;
+        }
+        #result {
+            color: red;
+            font-weight: bold;
+        }
+        input, button {
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+        img {
+            max-width: 100%%;
+            margin-top: 10px;
+        }
+        audio {
+            display: block;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎵 Квест на День Рождения ) 🎵</h1>
+    <div id="question-box">
+        <p id="question"></p>
+        <div id="extra"></div>
+        <input type="text" id="answer" placeholder="Твой ответ...">
+        <br>
+        <button onclick="checkAnswer()">Ответить</button>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        
+const questions = [
+    {
+        q: "Угадай композицию по музыкальному фрагменту:",
+        a: ["fly me to the moon"],
+        audio: "fmttm.aac"
+    },
+    {
+        q: "Продолжи строчку: 'Summertime, and the living is ...'",
+        a: ["easy"]
+    },
+    {
+        q: "Сколько четвертей в такте 5/4?",
+        a: ["5"]
+    },
+    {
+        q: "Как называется стиль джазового вокала, в котором имитируют инструменты?",
+        a: ["скэт", "scat"]
+    },
+    {
+        q: "Что за тональность изображена на картинке?",
+        a: ["ре мажор", "си минор"],
+        image: "question6.png"
+    },
+    {
+        q: "Посмотри на эти ноты — что за песня?",
+        a: ["the shadow of your smile"],
+        image: "question7.png"
+    }
+];
+
+
+        let current = 0;
+
+        function showQuestion() {
+            document.getElementById("result").textContent = "";
+            document.getElementById("answer").value = "";
+            document.getElementById("extra").innerHTML = "";
+
+            if (current < questions.length) {
+                let q = questions[current];
+                document.getElementById("question").textContent = `Вопрос ${current + 1}: ${q.q}`;
+
+                if (q.audio) {
+                    document.getElementById("extra").innerHTML = `<audio controls><source src="${q.audio}" type="audio/aac"></audio>`;
+                }
+
+                if (q.image) {
+                    document.getElementById("extra").innerHTML = `<img src="${q.image}">`;
+                }
+            } else {
+                
+    document.getElementById("question-box").innerHTML = `
+        <h2>🎉 Поздравляю с Днём Рождения! 🎁</h2>
+        <p>Твой подарок ждёт тебя в Яндексе по адресу:<br><strong>Ленинский пр. 116</strong></p>
+        <img src="final.png">
+    `;
+    
+            }
+        }
+
+        function checkAnswer() {
+            let input = document.getElementById("answer").value.trim().toLowerCase();
+            let correct = questions[current].a;
+            if (correct.includes(input)) {
+                current++;
+                showQuestion();
+            } else {
+                document.getElementById("result").textContent = "Неа, подумай ещё!";
+            }
+        }
+
+        showQuestion();
+    </script>
+</body>
+</html>
